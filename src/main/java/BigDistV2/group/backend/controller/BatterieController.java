@@ -30,6 +30,7 @@ public class BatterieController {
 	public List<Batterie> afficherBatteries(){
 		return batterieRepository.findAll();
 	}
+	
 	@PostMapping("/add")
 	private Batterie AjouterBatterie(@RequestBody Batterie B) {
 		return batterieRepository.save(B);

@@ -1,29 +1,58 @@
 package BigDistV2.group.backend.controller;
 
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import BigDistV2.group.backend.model.OurUser;
-import BigDistV2.group.backend.repository.OurUserRepository;
+import BigDistV2.group.backend.auth.AuthenticationRequest;
+import BigDistV2.group.backend.auth.AuthenticationResponse;
+import BigDistV2.group.backend.auth.AuthenticationService;
+import BigDistV2.group.backend.auth.RegisterRequest;
+
+
 
 @RestController
-@RequestMapping
+@RequestMapping("/auth")
+@CrossOrigin(origins = "http://localhost:5173/")
 public class Controller {
-    @Autowired
-    private OurUserRepository ourUserRepository;
+	
+	@Autowired
+	private AuthenticationService service;
+	
+	@PostMapping("/register")
+	  public ResponseEntity<AuthenticationResponse> register(
+	      @RequestBody RegisterRequest request
+	  ) {
+	    return ResponseEntity.ok(service.register(request));
+	  }
+	@PostMapping("/authenticate")
+	  public ResponseEntity<AuthenticationResponse> authenticate(
+	      @RequestBody AuthenticationRequest request
+	  ) {
+	    return ResponseEntity.ok(service.authenticate(request));
+	  }
+	
+	
+	
+	 
     
+    /*
     @Autowired
     private PasswordEncoder passwordEncoder;
+    
+    @Autowired
+    private UsersService userService;
+    
+    @PostMapping("/authenticate")
+    public ResponseEntity<Object> authenticateUser(@RequestBody OurUser ourUser) {
+    	return userService.authenticate(ourUser);
+    }
+    
 
     @GetMapping("/")
     public String goH0me(){
@@ -57,4 +86,5 @@ public class Controller {
         }
         return null;
     }
+    */
 }
