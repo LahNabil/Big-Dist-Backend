@@ -17,7 +17,7 @@ import BigDistV2.group.backend.auth.RegisterRequest;
 
 
 @RestController
-@RequestMapping("/auth")
+@RequestMapping()
 @CrossOrigin(origins = "http://localhost:5173/")
 public class Controller {
 	

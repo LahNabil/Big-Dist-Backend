@@ -25,12 +25,13 @@ public class SecurityConfiguration {
 	 	private JwtAuthentificationFilter jwtAuthFilter;
 	    private final AuthenticationProvider authenticationProvider;
 	    
+	    
 	    @Bean
 		public SecurityFilterChain securityfilterChain(HttpSecurity http) throws Exception{
 	    	http
             .csrf(AbstractHttpConfigurer::disable)
             .authorizeHttpRequests(req ->
-                    req.requestMatchers("/batteries","/auth/**")
+                    req.requestMatchers("/batteries","/authenticate","/register")
                             .permitAll()
                             .anyRequest()
                             .authenticated()
