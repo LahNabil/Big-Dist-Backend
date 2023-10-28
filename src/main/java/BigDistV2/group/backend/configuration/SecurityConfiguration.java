@@ -12,6 +12,9 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import lombok.RequiredArgsConstructor;
 
@@ -19,19 +22,30 @@ import lombok.RequiredArgsConstructor;
 @EnableWebSecurity
 @RequiredArgsConstructor
 @EnableMethodSecurity
-public class SecurityConfiguration {
+@EnableWebMvc
+public class SecurityConfiguration implements WebMvcConfigurer {
 		
 		@Autowired
 	 	private JwtAuthentificationFilter jwtAuthFilter;
+		@Autowired
 	    private final AuthenticationProvider authenticationProvider;
+	    
+	    @Override
+	    public void addCorsMappings(CorsRegistry registry) {
+	        registry.addMapping("/**") // Allow all paths
+	            .allowedOrigins("http://localhost:5173") // Allow requests from this origin
+	            .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS") // Allowed HTTP methods
+	            .allowCredentials(true); // Allow including cookies in the request (if applicable)
+	    }
 	    
 	    
 	    @Bean
 		public SecurityFilterChain securityfilterChain(HttpSecurity http) throws Exception{
 	    	http
             .csrf(AbstractHttpConfigurer::disable)
+            .cors(AbstractHttpConfigurer::disable)
             .authorizeHttpRequests(req ->
-                    req.requestMatchers("/batteries","/authenticate","/register")
+                    req.requestMatchers("/batteries","/register","/authenticate")
                             .permitAll()
                             .anyRequest()
                             .authenticated()

@@ -13,6 +13,8 @@ import BigDistV2.group.backend.auth.AuthenticationRequest;
 import BigDistV2.group.backend.auth.AuthenticationResponse;
 import BigDistV2.group.backend.auth.AuthenticationService;
 import BigDistV2.group.backend.auth.RegisterRequest;
+import BigDistV2.group.backend.configuration.JwtService;
+import BigDistV2.group.backend.repository.UserRepository;
 
 
 
@@ -23,6 +25,10 @@ public class Controller {
 	
 	@Autowired
 	private AuthenticationService service;
+	@Autowired
+	private JwtService jwtService;
+	@Autowired
+	private UserRepository repository;
 	
 	@PostMapping("/register")
 	  public ResponseEntity<AuthenticationResponse> register(
@@ -32,9 +38,14 @@ public class Controller {
 	  }
 	@PostMapping("/authenticate")
 	  public ResponseEntity<AuthenticationResponse> authenticate(
-	      @RequestBody AuthenticationRequest request
-	  ) {
+	      @RequestBody AuthenticationRequest request) {
+		System.out.println("Req email: " + request.getEmail());
+		System.out.println("Req pass: " + request.getPassword());
+		var user = repository.findByEmail(request.getEmail()).orElseThrow();
+		var jwtToken = jwtService.generateToken(user);
+		System.out.println("Generated JWT Token: " + jwtToken);
 	    return ResponseEntity.ok(service.authenticate(request));
+	    
 	  }
 	
 	

@@ -8,7 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import BigDistV2.group.backend.model.Token;
-
+@Repository
 public interface TokenRepository extends JpaRepository<Token, Integer> {
 	@Query(value = """
 		      select t from Token t inner join User u\s

@@ -1,5 +1,6 @@
 package BigDistV2.group.backend.auth;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -19,10 +20,15 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class AuthenticationService {
 	
+	@Autowired
 	private final PasswordEncoder passwordEncoder;
+	@Autowired
     private final UserRepository repository;
+	@Autowired
     private final JwtService jwtService;
+	@Autowired
     private final AuthenticationManager authenticationManager;
+	@Autowired
     private final TokenRepository tokenRepository;
     
 
@@ -61,19 +67,20 @@ public class AuthenticationService {
 
     public AuthenticationResponse authenticate(AuthenticationRequest request) {
         authenticationManager.authenticate(
-            new UsernamePasswordAuthenticationToken(
-                request.getEmail(),
-                request.getPassword()
-            )
+            new UsernamePasswordAuthenticationToken(request.getEmail(),request.getPassword())
+
         );
-        var user = repository.findByEmail(request.getEmail())
-            .orElseThrow();
+        
+        var user = repository.findByEmail(request.getEmail()).orElseThrow();
         var jwtToken = jwtService.generateToken(user);
+        System.out.println("Generated JWT Token: " + jwtToken);
         revokeAllUserTokens(user);
         saveUserToken(user, jwtToken);
-    	return AuthenticationResponse.builder()
-    			.token(jwtToken)
-    			.build();
+        return
+                AuthenticationResponse.builder()
+                .token(jwtToken)
+                .build();
+
       }
     
     private void revokeAllUserTokens(User user) {
